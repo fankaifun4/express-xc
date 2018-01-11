@@ -18,7 +18,9 @@
 	<section class="container-fluid" >
 		<div class="cvs-wrap">
 			<div class="cvs-container"  ng-style="canvasComputed" id="cvs-wrap">
-				<div class="bg"></div>
+				<div class="bg">
+					<img ng-src="{{backgroundImg}}" alt=""  ng-style="canvasComputed">
+				</div>
 				<div class="cvs-items">
 					<div 
 						class="img-items" 
@@ -38,19 +40,19 @@
 			    	
 			    	<div class="pd-tb-5">
 			    		<div class=" btn btn-success file-bg">
-			    			插入背景图
+			    			上传本地背景
 			    			<input type="file" 
 			    				class="file-opcity-0" 
 			    				id="upload-background" 
-			    				accept="image/png,image/jpg,image/jpeg"  >
+			    				accept="image/png,image/jpg,image/jpeg"
+			    				ng-model="myFile" />
 			    		</div>
-
-			    		<input type="button" value="上传" ng-click="uploadAdmin()" class="btn btn-primary">
-			    		<input type="button" value="选择已有背景"  ng-click="getImgBgList()" class="btn btn-warning">
+			    		<input type="button" value="上传" ng-click="uploadPreviewModal()"  class="btn btn-primary">
+			    		<input type="button" value="选择背景"  ng-click="getImgBgList()" class="btn btn-warning">
 			    	</div>
 			    	<div class="pd-tb-5">
 			    		<div class="previewBg">
-			    			<img src="" alt="">
+			    			<img src="" alt="" id="preview-bg">
 			    		</div>
 			    	</div>
 			    	<hr/>
@@ -71,6 +73,7 @@
 			    	<hr/>
 			    	<div class="pd-tb-5">
 			    		<input type="button" ng-click="addItems()" value="添加元素" class="btn btn-success" name="">
+			    		<input type="button" ng-click="deleteItems()" value="删除元素" class="btn btn-success" name="">
 			    	</div>
 			    	<div class="pd-tb-5">
 			    		<label for="">设置元素宽高：</label>
@@ -121,6 +124,12 @@
 				    			class="computed-value"  name="" readonly="">
 				    	</div>
 			    	</div>
+			    	<div class="pd-tb-5">
+				    		<input type="button"  class="btn btn-success" 
+				    			ng-click="toPreviewModal()" value="预览主题">
+
+				    		<input type="button" ng-click="setFinallyData()"  class="btn btn-danger" value="生成主题">
+				    </div>
 			    </div>
 			</div>
 		</div>
@@ -132,21 +141,88 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<h4 class="modal-title">Modal title</h4>
+					<h4 class="modal-title">图片列表</h4>
 				</div>
 				<div class="modal-body modal-title-list">
 					<div class="title-list">
 						<ul>
-							<li ng-click="getListItem(item,index)" ng-class="{'active':index==listActive}" class="list-type" ng-repeat="(index,item) in typeList">{{ item.type }}</li>
+							<li ng-click="getListItem(item,index)" ng-class="{'active':index==listActive}" class="list-type" ng-repeat="(index,item) in typeList">{{ item.theme }}</li>
+						</ul>	
+					</div>
+				</div>
+				<div class="modal-body flex-left">
+					<div ng-click="getBGitems(item)" class="bglist-items" ng-repeat="(index,item) in bgGroundList">
+						<div><img id="{{item.id}}" ng-src="{{baseUrl}}{{item.pic}}"></div>
+						<div><label for="">相片名称：</label>{{item.title}}</div>
+						<div><label for="">相片主题：</label>{{item.theme}}</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button"  class="btn btn-primary">确定</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	<!-- /.modal-content -->
+	<div class="modal fade"   id="chioseType">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">请选择你要上传的背景主题</h4>
+				</div>
+				<div class="modal-body modal-title-list">
+					<div class="title-list">
+						<ul>
+							<li ng-click="getListItem(item,index)" ng-class="{'active':index==listActive}" class="list-type" ng-repeat="(index,item) in typeList">{{ item.theme }}</li>
 						</ul>	
 					</div>
 				</div>
 				<div class="modal-body">
-					<p>这里是[利索美丽]系列的背景图片</p>
+
+					<label for="">增加自定义主题：</label>
+					<input type="text" name="" ng-model="diyType">
+					
+					<label for="">设置背景图片名称：</label>
+					<input type="text" name="" ng-model="bgItemName">
+					
+				</div>
+				<div class="modal-body">
+					<label for="">预览</label>
+					<img src="" id="upload-preview" alt="">
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary">确定</button>
+					<button type="button" ng-click="uploadAdmin()" class="btn btn-primary">确定</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<!-- 预览模态 -->
+	<!-- /.modal-content -->
+	<div class="modal fade"   id="preview-modal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">预览</h4>
+				</div>
+				<div class="modal-body">
+					<div class="cvs-container"  ng-style="canvasComputed">
+						<div class="bg preview">
+							<img ng-src="{{backgroundImg}}" alt=""  ng-style="canvasComputed">
+						</div>
+						<div class="cvs-items">
+							<div class="img-items" ng-style="item" ng-repeat="item in itemList">
+								<div class="glyphicon glyphicon-plus"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
