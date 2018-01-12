@@ -53,12 +53,12 @@
 			    		计算背景宽高:
 			    	</label>
                     <div class="pd-tb-5">
-                        <input type="number" class="computed-value" ng-model="canvasComputed.width" placeholder="宽" ng-change="changeSize(canvasComputed,cvsRatio,'rotate')">
-                        <input type="number" class="computed-value" ng-model="canvasComputed.height" placeholder="高" ng-change="changeSize(canvasComputed,cvsRatio,'rotate')">
+                        <input type="number" step="10" class="computed-value" ng-model="canvasComputed.width" placeholder="宽" ng-change="changeSize(canvasComputed,cvsRatio,'rotate')">
+                        <input type="number" step="10" class="computed-value" ng-model="canvasComputed.height" placeholder="高" ng-change="changeSize(canvasComputed,cvsRatio,'rotate')">
                         <span>比例：</span>
-                        <input type="text" class="computed-value" readonly="" ng-model="cvsRatio.rotate" name="" placeholder="自动计算">
+                        <input type="number" class="computed-value" readonly="" ng-model="cvsRatio.rotate" name="" placeholder="自动计算">
                     </div>
-
+                    <div><input type="button" ng-click="resetBack()" class="btn btn-success" value="复原"></div>
                     <hr/>
                     <div class="pd-tb-5">
                         <input type="button" ng-click="addItems()" value="添加元素" class="btn btn-success" name="">
@@ -68,8 +68,8 @@
                         <label for="">设置元素宽高：</label>
                     </div>
                     <div class="pd-tb-5">
-                        <input type="number" class="computed-value" placeholder="宽" ng-change="changeSize(currentItem,currentItem,'aspectRatio')" ng-model="currentItem.width">
-                        <input type="number" class="computed-value" placeholder="高" ng-change="changeSize(currentItem,currentItem,'aspectRatio')" ng-model="currentItem.height">
+                        <input type="number" step="10" class="computed-value" placeholder="宽" ng-change="changeSize(currentItem,currentItem,'aspectRatio')" ng-model="currentItem.width">
+                        <input type="number" step="10" class="computed-value" placeholder="高" ng-change="changeSize(currentItem,currentItem,'aspectRatio')" ng-model="currentItem.height">
                         <span>比例：</span>
                         <input type="text" class="computed-value" readonly="" ng-model="currentItem.aspectRatio" name="" placeholder="自动计算">
                     </div>

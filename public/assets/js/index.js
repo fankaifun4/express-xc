@@ -51,7 +51,7 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         for (var i = 0; i < s.itemList.length; i++) {
             if (s.itemList[i].id == box.id) {
                 s.currentItem = s.itemList[i]
-                s.currentItem.border = "1px dashed #f00"
+                s.currentItem.border = "3px dashed #f00"
             } else {
                 s.itemList[i].border = "none"
             }
@@ -87,20 +87,37 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
 
     //改变背景图片大小
     s.changeSize = function(model, tpl, name) {
-        if (model.width < 0) {
-            model.width = 0
+
+        if (parseInt(model.width) < 1) {
+            model.width = 100
         }
-        if (model.width >= 960) {
+        if (parseInt(model.width) >= 960) {
             model.width = 960
         }
-        if (model.height < 0) {
+        if (parseInt(model.height) < 0) {
             model.height = 0
         }
-        if (model.height > 2000) {
+        if (parseInt(model.height) > 2000) {
             model.height = 2000
         }
         if (name)
-            tpl[name] = (model.width / model.height).toFixed(3)
+            tpl[name] = (parseInt(model.width) / parseInt(model.height)).toFixed(3)
+    }
+    s.resetBack = function() {
+        // s.canvasComputed
+
+        var temImg = new Image()
+        temImg.src = s.backgroundImg
+        if (temImg.complete) {
+            s.canvasComputed.width = temImg.width
+            s.canvasComputed.height = temImg.height
+            return;
+        }
+        temImg.onload = function() {
+            s.canvasComputed.width = temImg.width
+            s.canvasComputed.height = temImg.height
+            s.$apply()
+        }
     }
 
     //默认移动盒子
@@ -125,7 +142,7 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         for (var i = 0; i < s.itemList.length; i++) {
             if (s.itemList[i].id == model.id) {
                 s.currentItem = model
-                s.currentItem.border = "1px dashed #f00"
+                s.currentItem.border = "3px dashed #f00"
             } else {
                 s.itemList[i].border = "none"
             }
@@ -292,7 +309,7 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         var bgimage = new Image()
         bgimage.src = s.backgroundImg
         bgimage.onload = function() {
-            if (bgimage.width > 960) {
+            if (bgimage.width >= 960) {
                 var cw = bgimage.width / 960
                 s.canvasComputed.width = bgimage.width / cw
                 s.canvasComputed.height = parseInt(bgimage.height / cw)
@@ -301,7 +318,7 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
                 s.canvasComputed.height = bgimage.height
             }
             s.cvsRatio.rotate = (s.canvasComputed.width / s.canvasComputed.height).toFixed(3)
-            s.$apply()
+            s.$apply('canvasComputed')
             $('#getImgList').modal('hide')
         }
     }
@@ -318,35 +335,36 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
 
     //预览已做好的一张主题
     //preview-modal
-    s.toPreviewModal = function() {
-            $('#preview-modal').modal()
-        }
-        // //储存类型数据
-        // s.tempData={
-        // 	//背景
-        // 	bgImg:"",
-        // 	//列表单个ID
-        // 	id:"img_list_0",
-        // 	//主视图比例
-        // 	cvsRatio:10/7,
-        // 	//文字数据
-        // 	textList:[],
-        // 	//相片元素数据
-        // 	//除了opcity,rotate为实数，其他都为百分比
-        // 	list:[{
-        // 		width:0,
-        // 		height:0,
-        // 		top:0,
-        // 		left:0,
-        // 		rotate:0,
-        // 		id:'222',
-        // 		opcity:1,
-        // 		pic:"",
-        // 		aspectRatio:1.777,
-        // 	}]
-        // }
+    // //储存类型数据
+    // s.tempData={
+    // 	//背景
+    // 	bgImg:"",
+    // 	//列表单个ID
+    // 	id:"img_list_0",
+    // 	//主视图比例
+    // 	cvsRatio:10/7,
+    // 	//文字数据
+    // 	textList:[],
+    // 	//相片元素数据
+    // 	//除了opcity,rotate为实数，其他都为百分比
+    // 	list:[{
+    // 		width:0,
+    // 		height:0,
+    // 		top:0,
+    // 		left:0,
+    // 		rotate:0,
+    // 		id:'222',
+    // 		opcity:1,
+    // 		pic:"",
+    // 		aspectRatio:1.777,
+    // 	}]
+    // }
 
-    // //当前加号集合
+    s.toPreviewModal = function() {
+        $('#preview-modal').modal()
+    }
+
+    //当前加号集合
     // s.itemList=[]
 
     //计算list矩阵百分比数据
@@ -356,10 +374,11 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         var ph = s.canvasComputed.height
         for (var i = 0; i < list.length; i++) {
             list[i].width = (list[i].width / pw * 100).toFixed(2)
-            list[i].height = (list[i].height / pw * 100).toFixed(2)
+            list[i].height = (list[i].height / ph * 100).toFixed(2)
             list[i].top = (list[i].top / ph * 100).toFixed(2)
-            list[i].left = (list[i].left / ph * 100).toFixed(2)
+            list[i].left = (list[i].left / pw * 100).toFixed(2)
         }
+
         return list
     }
 
@@ -393,9 +412,7 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
             s.finallyData.push(tempData)
         }
         //生成主题
-    s.finallyPush = function() {
-        console.log(id)
-    }
+
     s.delList = function(index, col) {
         col.splice(index, 1)
     }
@@ -403,22 +420,23 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         let model = col[index]
         if (index == col.length - 1) return
         let tempModel = angular.copy(model)
+
         col.splice(index, 1)
         col.splice(index + 1, 0, tempModel)
-
     }
     s.toprev = function(index, col) {
         let model = col[index]
         if (index < 1) return
         let tempModel = angular.copy(model)
+
         col.splice(index, 1)
         col.splice(index - 1, 0, tempModel)
     }
     s.isFinallyData = {
-        id:null,
-        data:{}
-       
+        id: null,
+        jsondata: {}
     }
+    s.codeId = 1
     s.sendXiangCeData = function() {
         var querySend = confirm('确定要上传已完成的相册组吗？')
         if (!querySend) return
@@ -426,22 +444,29 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
             alert('没有生成任何相片组')
             return;
         }
-      
-        let id=new Date().getTime()
-
-        s.isFinallyData.id=1
-        s.isFinallyData.data={
-            tmeme:angular.copy(s.diyType),
+        s.isFinallyData.id = s.codeId
+        var sendData = JSON.stringify({
+            tmeme: angular.copy(s.diyType),
             list: angular.copy(s.finallyData)
-        }
-        $http({  
-            method:'post',  
-            url:'http://tp.taodama.net/mobile/photo/upalbum',  
-            data:s.isFinallyData
-        }).then(function(req){  
-            console.log(req);  
-
-        })  
-            // $http.post('',)
+        })
+        s.isFinallyData.jsondata = sendData
+        var url = s.uploadBaseUrl + "upalbum"
+        s.isloading = true
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: s.isFinallyData,
+            dataType: 'json'
+        }).done(function(res) {
+            if (res.code) {
+                alert('上传成功')
+                s.isloading = false;
+                s.$apply()
+            } else {
+                alert('上传失败，请联系管理员')
+                s.isloading = false;
+                s.$apply()
+            }
+        });
     }
 }])

@@ -103,7 +103,7 @@
 
 .cvs-container .img-items {
     position: absolute;
-    background: #ccc;
+    background: rgba(100, 100, 100, .5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -217,12 +217,14 @@
     display: flex;
     flex-wrap: wrap;
     position: relative;
+    transition: all .5s;
 }
 
 .finally-items {
     max-width: 200px;
     position: relative;
     margin: 15px;
+    transition: all .5s;
 }
 
 .finally-bg {
@@ -237,6 +239,7 @@
 .finally-container {
     width: 100%;
     position: relative;
+    transition: all .5s;
 }
 
 .finally-container img {
