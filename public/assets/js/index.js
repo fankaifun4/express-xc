@@ -415,8 +415,9 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
         col.splice(index - 1, 0, tempModel)
     }
     s.isFinallyData = {
-        theme: null,
-        list: []
+        id:null,
+        data:{}
+       
     }
     s.sendXiangCeData = function() {
         var querySend = confirm('确定要上传已完成的相册组吗？')
@@ -425,9 +426,22 @@ app.controller('xcCtrl', ['$scope', '$http', function(s, $http) {
             alert('没有生成任何相片组')
             return;
         }
-        s.isFinallyData.theme = angular.copy(s.diyType)
-        s.isFinallyData.list = angular.copy(s.finallyData)
-        console.log(JSON.stringify(s.isFinallyData))
+      
+        let id=new Date().getTime()
+
+        s.isFinallyData.id=1
+        s.isFinallyData.data={
+            tmeme:angular.copy(s.diyType),
+            list: angular.copy(s.finallyData)
+        }
+        $http({  
+            method:'post',  
+            url:'http://tp.taodama.net/mobile/photo/upalbum',  
+            data:s.isFinallyData
+        }).then(function(req){  
+            console.log(req);  
+
+        })  
             // $http.post('',)
     }
 }])
