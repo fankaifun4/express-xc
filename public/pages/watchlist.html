@@ -1,0 +1,38 @@
+<div ng-controller="watchlist">
+	<div class="list-title">
+		<ul>
+			<li ng-class="{'active':choise==index}" ng-repeat="(index,item) in listTitle" ng-click="getItem(index)">{{ item.theme? item.theme:"无名字"}}</li>
+		</ul>
+	</div>
+	<div class="get-list">
+		<ul>
+			<li></li>
+		</ul>
+	</div>
+</div>
+<style>
+	.list-title ul{
+		overflow: hidden;
+		display: flex;
+		align-items: center;
+		justify-content: space-start;
+		flex-wrap: wrap;
+	}
+	.list-title ul li{
+		padding:10px 15px;
+		border:1px dashed #333;
+		margin:10px 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 2;
+		cursor: pointer;
+	}
+	.active{
+		background:#333;
+		color:#fff;
+	}
+	.list-title ul li:after{
+		content:"";
+	}
+</style>
