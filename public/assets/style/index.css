@@ -176,13 +176,17 @@ ul,li{
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column ;
 }
 
 .loading-cont {
-    width: 300px;
-    height: 200px;
     font-size: 30px;
     color: #fff;
+}
+.loading-text {
+    font-size: 14px;
+    color: #fff;
+    text-align: center;
 }
 
 .previewBg {

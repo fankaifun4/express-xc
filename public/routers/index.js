@@ -21,4 +21,13 @@ app.config(['$stateProvider', '$urlRouterProvider',function($s, $url) {
           }]
         }
     })
+    .state('generate', {
+        url: '/generate',
+        templateUrl: 'pages/generatelist.html',
+        resolve: {
+          loadMyService: ['$ocLazyLoad', function($ocLazyLoad) {
+            return $ocLazyLoad.load(['controller/generatelist.js','directives/isloading.js']); // 按需加载目标 js file
+          }]
+        }
+    })
 }])

@@ -20,6 +20,7 @@
 		<ul>
 			<li ng-class="{'active':navchoise=='setalbum'}"   ng-click="goSetAlbum()">生成相册</li>
 			<li ng-class="{'active':navchoise=='watchlist'}"  ng-click="goWatchList()">查看商品列表</li>
+			<li ng-class="{'active':navchoise=='generate'}"  ng-click="goGenera()">生成相册</li>
 		</ul>
 	</header>
 	<div ui-view></div>
@@ -29,7 +30,7 @@
 </body>
 <style type="text/css" media="screen">
 	.container-header{
-		height:80px;
+		height:40px;
 		border-bottom:1px solid #999;
 		background:linear-gradient(#ccc, #fefeff 100%);
 		box-sizing: border-box;
@@ -41,9 +42,9 @@
 	.container-header ul li{
 		float: left;
 		list-style: none;
-		height:80px;
+		height:40px;
 		text-align:center;
-		line-height: 80px;
+		line-height: 40px;
 		color:#333;
 		padding:0 30px;
 		font-size:16px;

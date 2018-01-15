@@ -183,7 +183,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
     //缓存上传图片名字
     s.UPLOADNAME = ''
         //loading
-    s.isloading = false
+    rs.isloading = false
 
     //previewimage
     //修改图片路径后预览
@@ -218,9 +218,9 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
 
         var imgBg = getFileUrl(file)
         uploadPreview.attr('src', imgBg)
-        s.isloading = true
+        rs.isloading = true
         $http.get(s.uploadBaseUrl + 'typelist').then(function(res) {
-            s.isloading = false
+            rs.isloading = false
             s.typeList = res.data
             $('#chioseType').modal()
         })
@@ -264,7 +264,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         uploadFile.append('title', s.bgItemName)
         uploadFile.append('theme', s.diyType)
 
-        s.isloading = true
+        rs.isloading = true
         $.ajax({
             url: s.uploadBaseUrl + "upload",
             type: "POST",
@@ -272,7 +272,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
             processData: false, // 不处理数据
             contentType: false // 不设置内容类型
         }).done(function(res) {
-            s.isloading = false
+            rs.isloading = false
             s.UPLOADNAME = file[0].name
             s.$apply()
             $('#chioseType').modal('hide')
@@ -282,9 +282,9 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
     s.typeList = []
         //获取类型列表
     s.getImgBgList = function() {
-        s.isloading = true
+        rs.isloading = true
         $http.get(s.uploadBaseUrl + 'typelist').then(function(res) {
-            s.isloading = false
+            rs.isloading = false
             s.typeList = res.data
             $('#getImgList').modal()
         })
@@ -451,7 +451,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         })
         s.isFinallyData.jsondata = sendData
         var url = s.uploadBaseUrl + "upalbum"
-        s.isloading = true
+        rs.isloading = true
         $.ajax({
             type: 'POST',
             url: url,
@@ -464,7 +464,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
                 s.$apply()
             } else {
                 alert('上传失败，请联系管理员')
-                s.isloading = false;
+                rs.isloading = false;
                 s.$apply()
             }
         });
