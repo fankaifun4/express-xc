@@ -1,74 +1,62 @@
 <div ng-controller="generate">
-	<div class="pic-wrap" id="pic-wrap">
-		<div ng-repeat="(index,item) in getData.data" class="pic-data">
-			<div class="pic-bg"><img ng-src="{{item.bgImg}}" class="bg-img" alt=""></div>
-			<div class="pic-img" ng-repeat="(key,imgs) in item.list"
-				 style="width:{{imgs.width}}%;
-					height:{{imgs.height}}%;
-					left:{{imgs.left}}%;
-					top:{{imgs.top}}%;
-					transform:rotate({{ imgs.rotate }}deg)">
-				<img ng-src="{{imgs.pic}}" class="imgs-pic" alt="">
-			</div>
-			<div class="pic-text">
-				<div class="text-style" ng-repeat="(index,dic) in item.textList"
-					style="left:{{dic.style.left}};
-					top:{{dic.style.top}};
-					font-size:{{dic.style.fontSize}}px;
-					color:{{dic.style.color}};
-					font-weight:{{ dic.style.fontWeight  }}"
-				>
-					{{ dic.text }}
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="btn btn-default" ng-click="startGenerate()">开始生成</div>
-	<div class="cnvas">
-		<canvas id="canvas"></canvas>	
-	</div>
-	<loading></loading>
+    <div class="pic-wrap" id="pic-wrap">
+        <loadxc data-id="{{item.id}}" ng-repeat="(index,item) in getData.data" class="pic-data"> </loadxc>
+    </div>
+    <div class="btn btn-default" ng-click="startGenerate()">开始生成</div>
+    <div class="cnvas">
+        <canvas id="canvas"></canvas>
+    </div>
+    <loading></loading>
 </div>
 <style>
-	.pic-wrap{
-		padding: 10px;
-		border: 3px dashed #f00;
-		overflow: hidden;
-	}
-	.pic-data{
-		position: relative;
-		float: left;
-		margin:10px;
-		border: 3px solid #ccc;
-		box-sizing: border-box;
-	}
-	.pic-bg{
-		width: 100%;
-		z-index: 3;
-		position: relative;
-	}
-	.pic-bg img{
-		width: 100%;
-		display: block;
-		border: none;
-	}
-	.pic-img {
-		position: absolute;
-		z-index: 1;
-	}
-	.pic-img>img{
-		display: block;
-		width: 100%;
-	}
-	.pic-text{
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		top: 0;
-		right: 0;
-		z-index: 4;
-	}
-	.text-style{
-		position: absolute;
-	}
+    .pic-wrap {
+        padding: 10px;
+        border: 3px dashed #f00;
+        overflow: hidden;
+    }
+    
+    .pic-data {
+        position: relative;
+        float: left;
+        margin: 10px;
+        border: 3px solid #ccc;
+        box-sizing: border-box;
+        max-width: 300px;
+    }
+    
+    .pic-bg {
+        width: 100%;
+        z-index: 3;
+        position: relative;
+    }
+    
+    .pic-bg img {
+        width: 100%;
+        display: block;
+        border: none;
+    }
+    
+    .pic-img {
+        position: absolute;
+        z-index: 1;
+    }
+    
+    .pic-img>img {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .pic-text {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        top: 0;
+        right: 0;
+        z-index: 4;
+    }
+    
+    .text-style {
+        position: absolute;
+    }
 </style>
