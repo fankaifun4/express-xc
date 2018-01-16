@@ -1,16 +1,16 @@
 <div>
-    <div class="pic-bg"><img ng-src="{{item.bgImg}}" class="bg-img" alt=""></div>
+    <div class="pic-bg"><img pic-id="{{item.id}}" ng-src="{{item.bgImg}}" class="bg-img" alt=""></div>
     <div class="pic-img" ng-repeat="(key,imgs) in item.list" style="width:{{imgs.width}}%;
                 height:{{imgs.height}}%;
                 left:{{imgs.left}}%;
                 top:{{imgs.top}}%;
                 transform:rotate({{ imgs.rotate }}deg)">
-        <img ng-src="{{imgs.pic}}" class="imgs-pic" alt="">
+        <img id="{{imgs.id}}" ng-src="{{imgs.pic}}" class="imgs-pic" alt="">
     </div>
     <div class="pic-text">
         <div class="text-style" ng-repeat="(index,dic) in item.textList" style="left:{{dic.style.left}};
                 top:{{dic.style.top}};
-                font-size:{{dic.style.relFontSize}}px;
+                font-size:{{dic.style.fontSize}}px;
                 color:{{dic.style.color}};
                 font-weight:{{ dic.style.fontWeight  }}">
             {{ dic.text }}

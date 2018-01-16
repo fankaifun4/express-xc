@@ -28,33 +28,55 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         let tempImg = new Image()
     }
 
+    s.drawImageList=[]
 
     s.startGenerate = function() {
+        rs.loading.show = true
+        rs.loading.text = '正在生产图片'
         var canvas = $('#canvas')[0];
         var context = canvas.getContext('2d')
         var data = s.getData.data
-        rs.loading.show = true;
-        rs.loading.text = '正在加载图片。。。';
-        data.forEach(function(item, index, arr) {
-            if (!item.bgImg || item.bgImg === '') return
-            var tempImg = new Image()
-            tempImg.src = item.bgImg
-            tempImg.id = item.id
-            rs.loading.text = '正在加载图片：' + item.bgImg;
-            tempImg.onload = function() {
-                var temp = {}
-                temp.id = item.id
-                temp.img = tempImg
-                temp.width = tempImg.width
-                temp.height = tempImg.height
-                temp.src = tempImg.bgImg
-                rs.loading.text = '图片: ' + item.bgImg + ' 加载完成';
-                s.computedText(item)
-                s.bgList.push(temp)
-                rs.$apply()
+        var picWrap=$('#pic-wrap')
+        var eachPic=picWrap.find('[data-id]')
+        eachPic.each(function(index){
+            rs.loading.text = '正在生产图片ID：'+$(this).attr('[data-id]')
+            var id=$(this).attr('data-id')
+            var drawData=null;
+            data.forEach(function(item){
+               if( item.id===id ){
+                    drawData=item
+                    return;
+               }
+            })
+            var bgImg=$(this).find('.bg-img')[0]
+            var avartList=[]
+            var drawImg=$(this).find('.imgs-pic')
+            drawImg.each(function(index){
+                avartList.push($(this)[0])
+            })
+            var width=bgImg.naturalWidth
+            var height=bgImg.naturalHeight
+            canvas.width=width
+            canvas.height=height
+            rs.drawImage.init(canvas,avartList,bgImg,drawData)
+            let url=canvas.toDataURL()
+            let drawedImg=new Image()
+            drawedImg.src=url
+            s.drawImageList.push( drawedImg )
+            $('.draw-img-list').append(drawedImg)
+            if( drawImageList.length== eachPic.length ){
+                rs.loading.text = '生产完成'
+                rs.loading.show=false
             }
-        })
+        })    
+        
+
+        // rs.loading.show = true;
+        // rs.loading.text = '正在加载图片。。。';
+        
     }
+
+
 
     //画图函数
     rs.drawImage = {
@@ -128,14 +150,15 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         },
         //文字
         drawText(item) {
+            console.log( (this.cvs.width*0.06)  )
             this.ctx.beginPath()
             this.ctx.save()
             this.ctx.translate(0, 0)
             this.ctx.textBaseline = 'hanging'
             this.ctx.fillStyle = item.style.color
-            this.ctx.font = item.style.fontWeight + ' ' + item.style.fontSize + 'px' + ' ' + '微软雅黑'
-            let x = item.style.left.replace(/px/, '')
-            let y = item.style.top.replace(/px/, '')
+            this.ctx.font = item.style.fontWeight + ' ' + (item.style.relFontSize*this.cvs.width) + 'px' + ' ' + '微软雅黑'
+            let x = parseInt( item.style.left.replace('%','')*this.cvs.width/100 )
+            let y = parseInt( item.style.top.replace('%','')*this.cvs.height/100 )
             this.ctx.fillText(item.text, x, y)
             this.ctx.restore();
             return this;
@@ -143,7 +166,6 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         //开始画图
         initDraw() {
             let empty = []
-
             function fileOrBlobToDataURL(obj, cb) {
                 var a = new FileReader();
                 a.readAsDataURL(obj);
@@ -151,7 +173,6 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
                     cb(e.target.result);
                 };
             }
-
             this.listImg.forEach(item => {
                 if (!item.img) return
                 if (item.img.src.match(/.jpg|.png|.jpeg/)) {
