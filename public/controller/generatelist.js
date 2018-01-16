@@ -2,7 +2,7 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
     rs.$emit('getStateName', state.current.name)
     rs.loading.show = true
 
-    $http.get('http://tp.taodama.net/mobile/photo/getusalbum?id=14').then(function(res) {
+    $http.get('http://tp.taodama.net/mobile/photo/getusalbum?id=2').then(function(res) {
         rs.loading.text = '正在加载数据';
         if (res.data.code) {
             rs.loading.text = '加载数据成功';
@@ -13,7 +13,7 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         } else {
             rs.loading.text = '加载数据失败'
             rs.loading.show = false
-            alert(res.data.data)
+            alert(res.data.msg)
         }
     })
 
@@ -28,52 +28,57 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         let tempImg = new Image()
     }
 
-    s.drawImageList=[]
+    s.drawImageList = []
 
     s.startGenerate = function() {
+
+        if (!s.getData || s.getData.data.length < 1) {
+            alert('没有数据可以生产')
+            return
+        }
         rs.loading.show = true
         rs.loading.text = '正在生产图片'
         var canvas = $('#canvas')[0];
         var context = canvas.getContext('2d')
         var data = s.getData.data
-        var picWrap=$('#pic-wrap')
-        var eachPic=picWrap.find('[data-id]')
-        eachPic.each(function(index){
-            rs.loading.text = '正在生产图片ID：'+$(this).attr('[data-id]')
-            var id=$(this).attr('data-id')
-            var drawData=null;
-            data.forEach(function(item){
-               if( item.id===id ){
-                    drawData=item
+        var picWrap = $('#pic-wrap')
+        var eachPic = picWrap.find('[data-id]')
+        eachPic.each(function(index) {
+            rs.loading.text = '正在生产图片ID：' + $(this).attr('[data-id]')
+            var id = $(this).attr('data-id')
+            var drawData = null;
+            data.forEach(function(item) {
+                if (item.id === id) {
+                    drawData = item
                     return;
-               }
+                }
             })
-            var bgImg=$(this).find('.bg-img')[0]
-            var avartList=[]
-            var drawImg=$(this).find('.imgs-pic')
-            drawImg.each(function(index){
+            var bgImg = $(this).find('.bg-img')[0]
+            var avartList = []
+            var drawImg = $(this).find('.imgs-pic')
+            drawImg.each(function(index) {
                 avartList.push($(this)[0])
             })
-            var width=bgImg.naturalWidth
-            var height=bgImg.naturalHeight
-            canvas.width=width
-            canvas.height=height
-            rs.drawImage.init(canvas,avartList,bgImg,drawData)
-            let url=canvas.toDataURL()
-            let drawedImg=new Image()
-            drawedImg.src=url
-            s.drawImageList.push( drawedImg )
+            var width = bgImg.naturalWidth
+            var height = bgImg.naturalHeight
+            canvas.width = width
+            canvas.height = height
+            rs.drawImage.init(canvas, avartList, bgImg, drawData)
+            let url = canvas.toDataURL()
+            let drawedImg = new Image()
+            drawedImg.src = url
+            s.drawImageList.push(1)
             $('.draw-img-list').append(drawedImg)
-            if( drawImageList.length== eachPic.length ){
+            if (s.drawImageList.length == eachPic.length) {
                 rs.loading.text = '生产完成'
-                rs.loading.show=false
+                rs.loading.show = false
             }
-        })    
-        
+        })
+
 
         // rs.loading.show = true;
         // rs.loading.text = '正在加载图片。。。';
-        
+
     }
 
 
@@ -150,15 +155,15 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         },
         //文字
         drawText(item) {
-            console.log( (this.cvs.width*0.06)  )
+            console.log((this.cvs.width * 0.06))
             this.ctx.beginPath()
             this.ctx.save()
             this.ctx.translate(0, 0)
             this.ctx.textBaseline = 'hanging'
             this.ctx.fillStyle = item.style.color
-            this.ctx.font = item.style.fontWeight + ' ' + (item.style.relFontSize*this.cvs.width) + 'px' + ' ' + '微软雅黑'
-            let x = parseInt( item.style.left.replace('%','')*this.cvs.width/100 )
-            let y = parseInt( item.style.top.replace('%','')*this.cvs.height/100 )
+            this.ctx.font = item.style.fontWeight + ' ' + (item.style.relFontSize * this.cvs.width) + 'px' + ' ' + '微软雅黑'
+            let x = parseInt(item.style.left.replace('%', '') * this.cvs.width / 100)
+            let y = parseInt(item.style.top.replace('%', '') * this.cvs.height / 100)
             this.ctx.fillText(item.text, x, y)
             this.ctx.restore();
             return this;
@@ -166,6 +171,7 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         //开始画图
         initDraw() {
             let empty = []
+
             function fileOrBlobToDataURL(obj, cb) {
                 var a = new FileReader();
                 a.readAsDataURL(obj);
