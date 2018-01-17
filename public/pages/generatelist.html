@@ -1,17 +1,25 @@
 <div ng-controller="generate">
+    <button class="pd-tb-5 btnsc" ng-click="startGenerate()">开始生成</button>
     <div class="pic-wrap" id="pic-wrap">
         <loadxc data-id="{{item.id}}" ng-repeat="(index,item) in getData.data" class="pic-data"> </loadxc>
     </div>
-    <div class="btn btn-default" ng-click="startGenerate()">开始生成</div>
+
     <div class="cnvas">
         <canvas id="canvas"></canvas>
     </div>
     <div class="draw-img-list">
-
     </div>
     <loading></loading>
 </div>
 <style>
+    .btnsc {
+        background: #090;
+        padding: 10px 25px;
+        margin: 20px;
+        border: 0;
+        color: #fff;
+    }
+    
     .cnvas {
         display: none;
     }
@@ -65,5 +73,22 @@
     
     .text-style {
         position: absolute;
+    }
+    
+    .draw-img-list img {
+        display: block;
+        border: 5px solid #096;
+        margin: 20px;
+        width: 300px;
+        float: left;
+        padding: 20px;
+        background: #fff;
+        transition: all .5s;
+        box-sizing: border-box;
+    }
+    
+    .draw-img-list img:hover {
+        background: rgba(255, 150, 10, .3);
+        border-color: rgba(255, 10, 0, .9);
     }
 </style>
