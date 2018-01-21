@@ -1,5 +1,5 @@
-app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs, $http,state) {
-	rs.$emit('getStateName',state.current.name)
+app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s, rs, $http, state) {
+    rs.$emit('getStateName', state.current.name)
     s.uploadBaseUrl = "http://tp.taodama.net/mobile/photo/"
     s.baseUrl = 'http://tp.taodama.net/'
         //储存类型数据
@@ -57,6 +57,8 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         }
 
     }
+
+
 
     //deleteItems
     //删除元素
@@ -176,14 +178,21 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         s.currentItem['transform'] = 'rotate(' + s.currentItem[name] + 'deg)'
     }
 
+    //设置唯一ID
+    var setThemeType = (new Date().getTime()).toString(32)
+
     //modal数据
 
     s.getListItem = []
 
     //缓存上传图片名字
     s.UPLOADNAME = ''
-        //loading
+
+    //loading
     rs.isloading = false
+
+    //相册标题
+    s.albumTitle = ""
 
     //previewimage
     //修改图片路径后预览
@@ -203,6 +212,10 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
     //打开上传选择主题模态
     s.listTypeName = ''
     s.uploadPreviewModal = function() {
+        if (s.albumTitle == '') {
+            alert('请输入相册标题')
+            return;
+        }
         var file = $('#upload-background')[0].files
 
         if (file.length < 1) return
@@ -247,6 +260,10 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
 
     //上传背景图片
     s.uploadAdmin = function() {
+        if (s.albumTitle == '') {
+            alert('请输入相册标题')
+            return;
+        }
         var file = $('#upload-background')[0].files
 
         if (file.length < 1) return
@@ -263,7 +280,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         uploadFile.append('ref', 'admin')
         uploadFile.append('title', s.bgItemName)
         uploadFile.append('theme', s.diyType)
-
+        uploadFile.append('title', s.albumTitle)
         rs.isloading = true
         $.ajax({
             url: s.uploadBaseUrl + "upload",
@@ -317,7 +334,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
                 s.canvasComputed.height = bgimage.height
             }
             s.cvsRatio.rotate = (s.canvasComputed.width / s.canvasComputed.height).toFixed(3)
-            
+
             $('#getImgList').modal('hide')
             s.$apply()
         }
@@ -335,30 +352,6 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
 
     //预览已做好的一张主题
     //preview-modal
-    // //储存类型数据
-    // s.tempData={
-    // 	//背景
-    // 	bgImg:"",
-    // 	//列表单个ID
-    // 	id:"img_list_0",
-    // 	//主视图比例
-    // 	cvsRatio:10/7,
-    // 	//文字数据
-    // 	textList:[],
-    // 	//相片元素数据
-    // 	//除了opcity,rotate为实数，其他都为百分比
-    // 	list:[{
-    // 		width:0,
-    // 		height:0,
-    // 		top:0,
-    // 		left:0,
-    // 		rotate:0,
-    // 		id:'222',
-    // 		opcity:1,
-    // 		pic:"",
-    // 		aspectRatio:1.777,
-    // 	}]
-    // }
 
     s.toPreviewModal = function() {
         $('#preview-modal').modal()
@@ -447,7 +440,8 @@ app.controller('xcCtrl', ['$scope', '$rootScope','$http','$state', function(s,rs
         s.isFinallyData.id = s.codeId
         var sendData = JSON.stringify({
             tmeme: angular.copy(s.diyType),
-            list: angular.copy(s.finallyData)
+            list: angular.copy(s.finallyData),
+            title: s.albumTitle
         })
         s.isFinallyData.jsondata = sendData
         var url = s.uploadBaseUrl + "upalbum"

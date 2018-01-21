@@ -1,8 +1,4 @@
-
-<div  ng-controller="xcCtrl">
-    <header class="header">
-        相册生成器
-    </header>
+<div ng-controller="xcCtrl">
     <section class="container-fluid">
         <div class="cvs-wrap">
             <div class="cvs-container" ng-style="canvasComputed" id="cvs-wrap">
@@ -20,7 +16,9 @@
             <div class="ctrl-heading">微调</div>
             <div class="ctrl-body">
                 <div class=''>
-
+                    <div class="pd-tb-5">
+                        <label for="">相册标题：</label>
+                        <input type="text" ng-model="albumTitle"></div>
                     <div class="pd-tb-5">
                         <div class=" btn btn-success file-bg">
                             上传本地背景
@@ -145,13 +143,11 @@
                     </div>
                 </div>
                 <div class="modal-body">
-
                     <label for="">增加自定义主题：</label>
                     <input type="text" name="" ng-model="diyType">
 
                     <label for="">设置背景图片名称：</label>
                     <input type="text" name="" ng-model="bgItemName">
-
                 </div>
                 <div class="modal-body">
                     <label for="">预览</label>
@@ -227,4 +223,3 @@
         <div class="loading-cont ">loading...</div>
     </div>
 </div>
-
