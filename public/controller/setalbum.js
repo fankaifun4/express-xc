@@ -1,5 +1,5 @@
 app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s, rs, $http, state) {
-    rs.$emit('getStateName', state.current.name)
+    // rs.$emit('getStateName', state.current.name)
     s.uploadBaseUrl = "http://tp.taodama.net/mobile/photo/"
     s.baseUrl = 'http://tp.taodama.net/'
         //储存类型数据

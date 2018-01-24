@@ -1,6 +1,6 @@
 app.controller('watchlist',['$scope','$rootScope','$http','$location','$state','$stateParams',
 	 function(s,rs,$http,location,state,params){
-		rs.$emit('getStateName',state.current.name)
+		// rs.$emit('getStateName',state.current.name)
 		s.listTitle=[]
 		$http.get(rs.baseUrl+'/typelist').then(function(res){
 			if(res.status===200){

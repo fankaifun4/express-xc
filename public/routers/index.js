@@ -20,7 +20,10 @@ app.config(['$stateProvider', '$urlRouterProvider', function($s, $url) {
             }
         })
         .state('generate', {
-            url: '/generate',
+            url: '/generate?{id}',
+            params: {
+                id:null
+            },
             templateUrl: 'pages/generatelist.html',
             resolve: {
                 loadMyService: ['$ocLazyLoad', function($ocLazyLoad) {
