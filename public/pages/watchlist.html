@@ -1,7 +1,7 @@
 <div ng-controller="watchlist">
     <div class="list-title">
         <ul>
-            <li ng-class="{'active':choise==index}" ng-repeat="(index,item) in listTitle" ng-click="getItem(index)">{{ item.theme? item.theme:"无名字"}}</li>
+            <li ng-class="{'active':choise==index}" ng-repeat="(index,item) in listTitle" ng-click="getItem(index,item)">{{ item.theme? item.theme:"无名字"}}</li>
         </ul>
     </div>
     <div class="get-list">

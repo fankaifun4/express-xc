@@ -7,21 +7,22 @@ app.controller('watchlist',['$scope','$rootScope','$http','$location','$state','
 				s.listTitle=res.data
 			}
 		})
-		s.getItem=function(index){
+		s.getItem=function(index,item){
 			s.choise=index
+			s.theme=item.theme
+			$http.get(rs.baseUrl+'/photolist?theme='+s.theme).then(function(res){
+				if(res.status===200){
+					console.log(res)
+				}
+			})
 		}
-
 		s.getModel=[
 			{
 				
 			}
 		]
-
-		$http.get(rs.baseUrl+'/getusalbum?id='+1).then(function(res){
-			if(res.status===200){
-				console.log(res)
-			}
-		})
+		// http://tp.taodama.net/mobile/photo/getalbum
+		
 
 }])
 
