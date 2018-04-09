@@ -4,9 +4,9 @@ app.controller('mainController', ['$scope','$rootScope','$http','$location','$st
 	 		show:false,
 	 		text:""
 	 	}
-		rs.$on('getStateName',function(event,value){
-			s.navchoise=value
-		})
+		// rs.$on('getStateName',function(event,value){
+		// 	s.navchoise=value
+		// })
 		rs.baseUrl="http://tp.taodama.net/mobile/photo"
 
 		s.goSetAlbum=function(){
@@ -16,6 +16,6 @@ app.controller('mainController', ['$scope','$rootScope','$http','$location','$st
 			state.go('watchlist')
 		}
 		s.goGenera=function(){
-			state.go('generate')
+			state.go('generate',{id:1})
 		}
 }])

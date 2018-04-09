@@ -1,12 +1,17 @@
 app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(s, rs, $http, state) {
-    rs.$emit('getStateName', state.current.name)
+    // rs.$emit('getStateName', state.current.name)
     rs.loading.show = true
 
-    $http.get('http://tp.taodama.net/mobile/photo/getusalbum?id=2').then(function(res) {
+    //相册接口ID
+    s.ID=state.params.id
+
+    $http.get('http://tp.taodama.net/mobile/photo/getusalbum?id='+s.ID).then(function(res) {
         rs.loading.text = '正在加载数据';
         if (res.data.code) {
             rs.loading.text = '加载数据成功';
             s.getData = res.data
+            rs.loading.text = '加载数据失败'
+            rs.loading.show = false
             s.getData.data.forEach(function(item, index, arr) {
                 var id = item.id
             })
@@ -80,8 +85,6 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         // rs.loading.text = '正在加载图片。。。';
 
     }
-
-
 
     //画图函数
     rs.drawImage = {
