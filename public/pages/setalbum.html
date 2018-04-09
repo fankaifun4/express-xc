@@ -145,11 +145,8 @@
                 <div class="modal-body">
                     <label for="">增加自定义主题：</label>
                     <input type="text" name="" ng-model="diyType">
-
-                    <label for="">设置背景图片名称：</label>
-                    <input type="text" name="" ng-model="bgItemName">
                 </div>
-                <div class="modal-body">
+                <div class="modal-body prev-img">
                     <label for="">预览</label>
                     <img src="" id="upload-preview" alt="">
                 </div>
@@ -222,4 +219,9 @@
     <div class="loading-wrap " ng-show="isloading ">
         <div class="loading-cont ">loading...</div>
     </div>
+    <style>
+        .prev-img img {
+            width: 100%;
+        }
+    </style>
 </div>

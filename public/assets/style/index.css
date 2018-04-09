@@ -1,10 +1,13 @@
-*{
+* {
     padding: 0;
     margin: 0;
 }
-ul,li{
-    list-style:none;
+
+ul,
+li {
+    list-style: none;
 }
+
 .pd-tb-15 {
     padding: 15px 0;
 }
@@ -176,13 +179,14 @@ ul,li{
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column ;
+    flex-direction: column;
 }
 
 .loading-cont {
     font-size: 30px;
     color: #fff;
 }
+
 .loading-text {
     font-size: 14px;
     color: #fff;
@@ -236,6 +240,7 @@ ul,li{
     position: relative;
     margin: 15px;
     transition: all .5s;
+    overflow: hidden;
 }
 
 .finally-bg {

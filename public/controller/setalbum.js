@@ -255,8 +255,7 @@ app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s,
 
     //主题名称
     s.diyType = ""
-        //背景图片名称
-    s.bgItemName = ""
+
 
     //上传背景图片
     s.uploadAdmin = function() {
@@ -278,7 +277,6 @@ app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s,
         let uploadFile = new FormData()
         uploadFile.append('file', file[0])
         uploadFile.append('ref', 'admin')
-        uploadFile.append('title', s.bgItemName)
         uploadFile.append('theme', s.diyType)
         uploadFile.append('title', s.albumTitle)
         rs.isloading = true
@@ -426,10 +424,9 @@ app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s,
         col.splice(index - 1, 0, tempModel)
     }
     s.isFinallyData = {
-        id: null,
-        jsondata: {}
+        jsondata: {},
+        title: s.albumTitle
     }
-    s.codeId = 1
     s.sendXiangCeData = function() {
         var querySend = confirm('确定要上传已完成的相册组吗？')
         if (!querySend) return
@@ -437,14 +434,17 @@ app.controller('xcCtrl', ['$scope', '$rootScope', '$http', '$state', function(s,
             alert('没有生成任何相片组')
             return;
         }
-        s.isFinallyData.id = s.codeId
         var sendData = JSON.stringify({
             tmeme: angular.copy(s.diyType),
             list: angular.copy(s.finallyData),
-            title: s.albumTitle
         })
         s.isFinallyData.jsondata = sendData
+        s.isFinallyData.title = s.albumTitle
         var url = s.uploadBaseUrl + "upalbum"
+        if (s.albumTitle == "") {
+            alert("相册标题不能为空")
+            return;
+        }
         rs.isloading = true
         $.ajax({
             type: 'POST',
