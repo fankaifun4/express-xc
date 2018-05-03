@@ -3,9 +3,9 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
     rs.loading.show = true
 
     //相册接口ID
-    s.ID=state.params.id
+    s.ID = state.params.id
 
-    $http.get('http://tp.taodama.net/mobile/photo/getusalbum?id='+s.ID).then(function(res) {
+    $http.get(rs.baseUrl + '/getusalbum?id=' + s.ID).then(function(res) {
         rs.loading.text = '正在加载数据';
         if (res.data.code) {
             rs.loading.text = '加载数据成功';
@@ -158,7 +158,6 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         },
         //文字
         drawText(item) {
-            console.log((this.cvs.width * 0.06))
             this.ctx.beginPath()
             this.ctx.save()
             this.ctx.translate(0, 0)
@@ -183,8 +182,10 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
                 };
             }
             this.listImg.forEach(item => {
+                console.log(item.img)
+                console.log(item.img.src.match(/.jpg|.png|.jpeg|.jgeg/))
                 if (!item.img) return
-                if (item.img.src.match(/.jpg|.png|.jpeg/)) {
+                if (item.img.src.match(/.jpg|.png|.jpeg|.jgeg/)) {
                     empty.push(item)
                 }
             })

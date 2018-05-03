@@ -5,7 +5,7 @@
                 left:{{imgs.left}}%;
                 top:{{imgs.top}}%;
                 transform:rotate({{ imgs.rotate }}deg)">
-        <img id="{{imgs.id}}" ng-src="{{imgs.pic}}" class="imgs-pic" alt="">
+        <img id="{{imgs.id}}" ng-src="{{'/'+imgs.pic}}" class="imgs-pic" alt="">
     </div>
     <div class="pic-text">
         <div class="text-style" ng-repeat="(index,dic) in item.textList" style="left:{{dic.style.left}};
