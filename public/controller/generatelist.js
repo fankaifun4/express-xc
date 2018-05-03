@@ -34,22 +34,25 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
     }
 
     s.drawImageList = []
-
+    var imgIndex = 0
     s.startGenerate = function() {
-
-        if (!s.getData || s.getData.data.length < 1) {
-            alert('没有数据可以生产')
-            return
-        }
         rs.loading.show = true
         rs.loading.text = '正在生产图片'
+        if (!s.getData || s.getData.data.length < 1) {
+            alert('没有数据可以生产')
+            rs.loading.show = false
+            return
+        }
         var canvas = $('#canvas')[0];
         var context = canvas.getContext('2d')
         var data = s.getData.data
         var picWrap = $('#pic-wrap')
         var eachPic = picWrap.find('[data-id]')
+
+
+
         eachPic.each(function(index) {
-            rs.loading.text = '正在生产图片ID：' + $(this).attr('[data-id]')
+            rs.loading.text = '正在生产图片ID：' + $(this).attr('data-id')
             var id = $(this).attr('data-id')
             var drawData = null;
             data.forEach(function(item) {
@@ -64,20 +67,23 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
             drawImg.each(function(index) {
                 avartList.push($(this)[0])
             })
-            var width = bgImg.naturalWidth
-            var height = bgImg.naturalHeight
+            var width = bgImg.naturalWidth * 2
+            var height = bgImg.naturalHeight * 2
             canvas.width = width
             canvas.height = height
             rs.drawImage.init(canvas, avartList, bgImg, drawData)
-            let url = canvas.toDataURL()
-            let drawedImg = new Image()
-            drawedImg.src = url
-            s.drawImageList.push(1)
-            $('.draw-img-list').append(drawedImg)
-            if (s.drawImageList.length == eachPic.length) {
-                rs.loading.text = '生产完成'
-                rs.loading.show = false
-            }
+            canvas.toBlob(function(blob) {
+                var url = URL.createObjectURL(blob);
+                let drawedImg = new Image()
+                drawedImg.src = url
+                s.drawImageList.push(1)
+                $('.draw-img-list').append(drawedImg)
+                if (s.drawImageList.length == eachPic.length) {
+                    rs.loading.text = '生产完成'
+                    rs.loading.show = false
+                    rs.$apply()
+                }
+            })
         })
 
 
@@ -182,8 +188,6 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
                 };
             }
             this.listImg.forEach(item => {
-                console.log(item.img)
-                console.log(item.img.src.match(/.jpg|.png|.jpeg|.jgeg/))
                 if (!item.img) return
                 if (item.img.src.match(/.jpg|.png|.jpeg|.jgeg/)) {
                     empty.push(item)
