@@ -1,4 +1,4 @@
-app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(s, rs, $http, state) {
+app.controller('generate', ['$scope', '$rootScope', '$http', '$state', '$timeout', function(s, rs, $http, state, $timeout) {
     // rs.$emit('getStateName', state.current.name)
     rs.loading.show = true
 
@@ -21,8 +21,48 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
             alert(res.data.msg)
         }
     })
+    s.templateImgaeArray = []
+    s.getIsImg = function(e) {
+        if (e.target.tagName == 'IMG') {
+            var cur = e.target
+            var src = cur.src
+                // if (s.templateImgaeArray.indexOf(src) >= 0) {
+                //     cur.style.border = "5px solid #096"
+                //     s.templateImgaeArray.forEach(function(item, index) {
+                //         if (item == src) {
+                //             s.templateImgaeArray.splice(index, 1)
+                //         }
+                //     })
+                // } else {
+                //     s.templateImgaeArray.push(src)
+                //     cur.style.border = "5px solid #900"
+                // }
+        }
+    }
+    s.isDownload = ""
+    s.getImageList = function() {
+            if (s.templateImgaeArray.length < 1) {
+                alert("还没有选择一张图片进行打包！")
+                return
+            } else {
+                rs.loading.text = '';
+                rs.loading.show = true
+                var imgList = s.templateImgaeArray.join('|')
+                $http({
+                    method: 'get',
+                    url: rs.baseUrl + '/tarfile?getFiles=' + imgList
+                }).then(function(res) {
+                    rs.loading.show = false
+                    if (res.data.code == 1) {
+                        s.isDownload = "/" + res.data.file
+                    } else {
+                        alert('打包失败')
+                    }
 
-    //生成imge
+                })
+            }
+        }
+        //生成imge
     s.bgList = []
     s.computedText = function(data) {
         rs.loading.text = '正在计算图文比例';
@@ -48,47 +88,68 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         var data = s.getData.data
         var picWrap = $('#pic-wrap')
         var eachPic = picWrap.find('[data-id]')
+        var DomIndex = 0
 
+        s.DRAWIMGLIST = function(index) {
+            if (index < eachPic.length) {
+                var imgIem = eachPic.eq(index)
+                rs.loading.text = '正在生产图片第：' + (index + 1) + "张"
+                var id = imgIem.attr('data-id')
+                var drawData = null;
+                data.forEach(function(item) {
+                    if (item.id === id) {
+                        drawData = item
+                        return;
+                    }
+                })
+                var bgImg = imgIem.find('.bg-img')[0]
+                var avartList = []
+                var drawImg = imgIem.find('.imgs-pic')
+                drawImg.each(function(index) {
+                    avartList.push(this)
+                })
+                var width = bgImg.naturalWidth * 2
+                var height = bgImg.naturalHeight * 2
+                canvas.width = width
+                canvas.height = height
+                rs.drawImage.init(canvas, avartList, bgImg, drawData)
+                canvas.toBlob(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    s.uploadFile(blob, index)
+                })
+            } else {
+                rs.loading.text = '生产完成'
+                rs.loading.show = false
+            }
+        }
+        s.DRAWIMGLIST(DomIndex)
+        s.uploadFile = function(blob, index) {
+            rs.loading.text = '正在上传' + (index + 1) + "张"
+            var format = new FormData()
+            format.append('file', blob)
 
-
-        eachPic.each(function(index) {
-            rs.loading.text = '正在生产图片ID：' + $(this).attr('data-id')
-            var id = $(this).attr('data-id')
-            var drawData = null;
-            data.forEach(function(item) {
-                if (item.id === id) {
-                    drawData = item
-                    return;
+            $http({
+                method: 'POST',
+                url: rs.baseUrl + '/upload2turn',
+                headers: {
+                    'Content-Type': undefined
+                },
+                data: format,
+            }).then(function(res) {
+                var resData = res.data
+                if (resData.code == 1) {
+                    rs.loading.text = '上传' + (index + 1) + "张完成"
+                    index += 1
+                    let drawedImg = new Image()
+                    drawedImg.src = "/" + resData.img
+                    s.templateImgaeArray.push(resData.img)
+                    $('.draw-img-list').append(drawedImg)
+                    $timeout(function() {
+                        s.DRAWIMGLIST(index)
+                    }, 1000)
                 }
             })
-            var bgImg = $(this).find('.bg-img')[0]
-            var avartList = []
-            var drawImg = $(this).find('.imgs-pic')
-            drawImg.each(function(index) {
-                avartList.push($(this)[0])
-            })
-            var width = bgImg.naturalWidth * 2
-            var height = bgImg.naturalHeight * 2
-            canvas.width = width
-            canvas.height = height
-            rs.drawImage.init(canvas, avartList, bgImg, drawData)
-            canvas.toBlob(function(blob) {
-                var url = URL.createObjectURL(blob);
-                let drawedImg = new Image()
-                drawedImg.src = url
-                s.drawImageList.push(1)
-                $('.draw-img-list').append(drawedImg)
-                if (s.drawImageList.length == eachPic.length) {
-                    rs.loading.text = '生产完成'
-                    rs.loading.show = false
-                    rs.$apply()
-                }
-            })
-        })
-
-
-        // rs.loading.show = true;
-        // rs.loading.text = '正在加载图片。。。';
+        }
 
     }
 
@@ -143,6 +204,7 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
         },
         //画元素
         drawAVAD(item) {
+
             this.ctx.beginPath()
             this.ctx.save()
             this.ctx.translate(0, 0)
@@ -188,6 +250,7 @@ app.controller('generate', ['$scope', '$rootScope', '$http', '$state', function(
                 };
             }
             this.listImg.forEach(item => {
+
                 if (!item.img) return
                 if (item.img.src.match(/.jpg|.png|.jpeg|.jgeg/)) {
                     empty.push(item)

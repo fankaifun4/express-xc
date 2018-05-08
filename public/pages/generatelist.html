@@ -1,5 +1,7 @@
 <div ng-controller="generate">
     <button class="pd-tb-5 btnsc" ng-click="startGenerate()">开始生成</button>
+    <button class="pd-tb-5 btnsc" ng-click="getImageList()">打包选中已生成的图片</button>
+    <a class="pd-tb-5 btnsc" ng-if="isDownload!=''" ng-href="{{isDownload}}">下载打包相册</a>
     <div class="pic-wrap" id="pic-wrap">
         <loadxc data-id="{{item.id}}" ng-repeat="(index,item) in getData.data" class="pic-data"> </loadxc>
     </div>
@@ -7,8 +9,7 @@
     <div class="cnvas">
         <canvas id="canvas"></canvas>
     </div>
-    <div class="draw-img-list">
-    </div>
+    <div class="draw-img-list" ng-click="getIsImg($event)"> </div>
     <loading></loading>
 </div>
 <style>
@@ -73,6 +74,10 @@
     
     .text-style {
         position: absolute;
+    }
+    
+    .draw-img-list {
+        overflow: hidden;
     }
     
     .draw-img-list img {
